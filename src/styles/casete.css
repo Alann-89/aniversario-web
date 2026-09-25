@@ -1,0 +1,193 @@
+/* =========================================================================
+   El casete — el reproductor (Casete.jsx)
+   -------------------------------------------------------------------------
+   Abajo a la izquierda: a la derecha asoma la impresión de la portada, y dos
+   objetos en la misma esquina es un error de composición.
+
+   Dos formas, un solo botón:
+   · despierto, el casete: cartón, la nota con el nombre, la ventanita con
+     los carretes y el símbolo; la cinta sujeta la nota por arriba;
+   · dormido (al bajar), el casete se guarda y la cinta baja a la esquina:
+     un objeto entero de 44 px con ♪ y las rayitas. Solo ella recibe el dedo:
+     lo demás no puede comerse los toques del contenido.
+   Todo se mueve con transform y opacidad. El cuerpo tiene alto fijo porque
+   la cinta tiene que saber cuánto bajar.
+   ========================================================================= */
+.casete {
+  position: fixed;
+  left: max(12px, env(safe-area-inset-left));
+  bottom: max(12px, env(safe-area-inset-bottom));
+  z-index: 40;
+  --alto: 62px;
+  --ancho: 128px;
+  --cinta: 50px;
+}
+
+/* Del tamaño del casete de antes (Alan, 24 sep 2026): a 184 px era un
+   letrero, no un objeto en la esquina. */
+.casete__boton {
+  position: relative;
+  display: block;
+  width: var(--ancho);
+  height: var(--alto);
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  --foco: var(--color-sello);
+}
+
+.casete__cuerpo {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: end;
+  gap: 5px;
+  padding: 0 7px 8px;
+  border-radius: 4px;
+  background: color-mix(in oklab, var(--color-papel) 78%, var(--color-ambar));
+  box-shadow: var(--sombra);
+  transform-origin: 0 100%;
+  transition: opacity 0.35s var(--ease-salida), transform 0.45s var(--ease-salida);
+}
+/* La etiqueta es una nota de papel, un poco torcida, con el canto de abajo
+   rasgado como las notas de la subida. */
+.casete__nota {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 4px 5px 6px;
+  background: var(--color-papel);
+  color: var(--color-noche);
+  transform: rotate(-1.2deg);
+  clip-path: polygon(0 0, 100% 0, 100% 86%, 88% 100%, 74% 90%, 60% 100%, 45% 91%, 30% 100%, 15% 90%, 0 98%);
+}
+.casete__nombre {
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 12.5px;
+  line-height: 1.1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.casete__cara { font-size: 9.5px; font-weight: 700; color: var(--color-sello); }
+.casete__fila {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-inline: 3px 1px;
+}
+.casete__ventana {
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 18px;
+  border-radius: 9px;
+  background: var(--color-noche);
+}
+/* Cada carrete como el de un casete de verdad: un disco claro con el hueco
+   del eje y SEIS dientes, que son lo que deja ver que gira mientras suena.
+   (Una cruz de radios se leía como un tache; un aro con un radio, como el
+   botón de encendido; tres muescas, como un triángulo de reproducir.) La
+   capa de arriba tapa los dientes fuera del eje. */
+.casete__carrete {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--color-noche) 0 1.7px, transparent 2px),
+    radial-gradient(circle, transparent 0 3.6px, var(--color-papel) 3.9px),
+    repeating-conic-gradient(var(--color-noche) 0 22deg, var(--color-papel) 0 60deg);
+}
+.casete--sonando .casete__carrete { animation: carrete 2.4s linear infinite; }
+@keyframes carrete {
+  to { transform: rotate(1turn); }
+}
+.casete__estado {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  fill: var(--color-sello);
+}
+
+/* La cinta: opaca (translúcida, de noche se volvía café y el ♪ no se leía)
+   y cortada en pico a mano, como la de las impresiones. */
+.casete__cinta {
+  position: absolute;
+  top: -9px;
+  /* Centrada sobre la nota, como se pega una cinta de verdad. */
+  left: calc((var(--ancho) - var(--cinta)) / 2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: var(--cinta);
+  height: 22px;
+  color: var(--color-noche);
+  transform: rotate(-5deg);
+  transition: transform 0.5s var(--ease-salida);
+}
+.casete__cinta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: color-mix(in oklab, var(--color-tarde) 88%, var(--color-papel));
+  clip-path: polygon(0 12%, 6% 0, 94% 6%, 100% 0, 97% 50%, 100% 100%, 5% 94%, 0 100%, 3% 50%);
+  filter: drop-shadow(0 1px 1px color-mix(in srgb, var(--color-noche) 25%, transparent));
+}
+.casete__nota-musical { width: 11px; height: 11px; fill: currentColor; }
+/* Tres rayitas de tinta: quietas y bajas en pausa; bailan cuando suena. */
+.casete__ondas { display: flex; align-items: flex-end; gap: 2px; height: 10px; }
+.casete__ondas i {
+  width: 2px;
+  height: 100%;
+  border-radius: 1px;
+  background: currentColor;
+  transform-origin: 50% 100%;
+  transform: scaleY(0.3);
+}
+.casete--sonando .casete__ondas i { animation: onda 0.9s ease-in-out infinite alternate; }
+.casete--sonando .casete__ondas i:nth-child(2) { animation-duration: 0.7s; animation-delay: -0.3s; }
+.casete--sonando .casete__ondas i:nth-child(3) { animation-duration: 1.1s; animation-delay: -0.6s; }
+@keyframes onda {
+  from { transform: scaleY(0.3); }
+  to { transform: scaleY(1); }
+}
+
+/* ---- Dormido: el casete se guarda y queda la cinta en la esquina --------
+   Con TECLADO, al enfocarlo se enseña entero (:focus-visible). Con
+   :focus-within bastaba un toque: el botón se quedaba con el foco y el
+   casete ya no volvía a guardarse al bajar. */
+.casete--dormido:not(:has(:focus-visible)) .casete__boton { pointer-events: none; }
+.casete--dormido:not(:has(:focus-visible)) .casete__cuerpo {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.casete--dormido:not(:has(:focus-visible)) .casete__cinta {
+  pointer-events: auto;
+  transform: translate(calc((var(--cinta) - var(--ancho)) / 2), calc(var(--alto) - 22px + 9px)) rotate(-3deg);
+}
+/* La cinta mide 50×22: esta franja invisible completa los 44 del dedo. */
+.casete--dormido .casete__cinta::after {
+  content: "";
+  position: absolute;
+  inset: -11px -2px;
+}
+
+@media (hover: hover) {
+  .casete:not(.casete--dormido) .casete__boton:hover .casete__cuerpo { transform: translateY(-2px); }
+}
+.casete__boton:active .casete__cuerpo { transform: scale(0.98); }
+@media (prefers-reduced-motion: reduce) {
+  .casete__cuerpo,
+  .casete__cinta { transition-duration: 0.01s; }
+  .casete--sonando .casete__carrete,
+  .casete--sonando .casete__ondas i { animation: none; }
+  .casete--sonando .casete__ondas i { transform: scaleY(0.75); }
+}

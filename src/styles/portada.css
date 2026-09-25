@@ -1,0 +1,260 @@
+/* =========================================================================
+   Portada — la foto a sangre, el título encima, la impresión que asoma
+   ========================================================================= */
+.portada {
+  position: relative;
+  min-height: 100vh;   /* primero vh, luego svh: al revés, vh gana y salta en iPhone */
+  min-height: 100svh;
+  display: grid;
+  align-content: end;
+  /* Abajo viven el casete (izquierda) y la impresión que asoma (derecha):
+     el texto termina por encima de los dos. */
+  padding: 0 var(--margen) clamp(104px, 15vh, 136px);
+  background: var(--color-noche);
+  overflow: hidden;
+  isolation: isolate;
+}
+.portada__foto {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 42%;
+}
+/* Velo funcional, no decorativo: el título tiene que pasar AA sea cual sea
+   la foto. La banda donde cae el texto va casi opaca; arriba se queda
+   claro para que las caras sigan leyéndose. Con la banda del texto a .06
+   (una versión anterior) el título medía 2.43:1 en el teléfono. */
+.portada__velo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-noche) 22%, transparent) 0%,
+    color-mix(in srgb, var(--color-noche) 18%, transparent) 26%,
+    color-mix(in srgb, var(--color-noche) 58%, transparent) 50%,
+    color-mix(in srgb, var(--color-noche) 88%, transparent) 80%,
+    var(--color-noche) 100%
+  );
+}
+.portada__titulo {
+  font-style: italic;
+  font-size: clamp(3.2rem, 15vw, 6rem);
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+  /* La medida va en la letra del propio título: "nuestro / 2 años / juntos". */
+  max-width: 7ch;
+}
+.portada__titulo .palabra { display: inline-block; }
+/* Un escalón por debajo del título (Alan, 24 sep 2026): del mismo papel
+   que él le robaba protagonismo. Va en el gris claro que usaba antes el
+   mensaje de la portada. */
+.portada__sub {
+  color: var(--tinta-suave);
+  margin-top: 0.55em;
+  max-width: 22ch;
+  font-size: clamp(1.15rem, 4.6vw, 1.55rem);
+  line-height: 1.25;
+}
+/* La foto se revela: una capa de papel encima de la foto (y debajo del
+   velo, así el título se lee desde el primer cuadro) que se desvanece. */
+.portada__revelado {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: color-mix(in oklab, var(--color-papel) 86%, var(--color-tarde));
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Los dibujitos del espejo: arriba, sobre el techo y el vidrio, que en
+   el teléfono es lo que queda vacío. Van debajo del velo, como parte de la
+   foto. Tinta clara, trazo redondo. */
+.portada__dibujos {
+  position: absolute;
+  z-index: -2;
+  top: clamp(24px, 6svh, 64px);
+  right: var(--margen);
+  width: min(74vw, 380px);
+  height: auto;
+  overflow: visible;
+  fill: none;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.9;
+}
+.portada__dibujos .dibujo {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* "Mi lugar favorito y perfecto", pegada sobre la foto junto a ellos dos,
+   arriba a la derecha, donde la foto es pared y no caras. */
+.portada__nota {
+  position: absolute;
+  top: clamp(88px, 28svh, 280px);
+  right: var(--margen);
+  max-width: 9em;
+  padding: 13px 16px 12px;
+  font-style: italic;
+  font-size: clamp(1.1rem, 4.6vw, 1.35rem);
+  line-height: 1.12;
+  text-wrap: balance;
+  transform: rotate(3.5deg);
+}
+.portada__nota .cinta { top: -11px; left: 50%; margin-left: -37px; transform: rotate(-4deg); }
+
+/* La primera impresión, asomando. A la derecha: abajo a la izquierda
+   vive el casete, y dos objetos en la misma esquina es un error de
+   composición, no de z-index. `--bajado` son los píxeles que ella lleva
+   bajados (escena.js): sube lo mismo hasta quedar entera. */
+.portada__asoma {
+  position: absolute;
+  right: var(--margen);
+  bottom: 0;
+  width: min(52vw, 240px);
+  color: var(--color-noche);
+  text-decoration: none;
+  transform: translateY(max(0px, 70% - var(--bajado, 0px))) rotate(3.2deg);
+}
+/* La pista, escrita a mano en la cinta que sujeta la impresión. Opaca:
+   translúcida, la mitad que cae sobre la noche se oscurecía y no se leía. */
+.portada__pista {
+  top: -17px;
+  left: 50%;
+  width: auto;
+  height: auto;
+  padding: 5px 16px 7px;
+  background: color-mix(in oklab, var(--color-tarde) 88%, var(--color-papel));
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.1;
+  white-space: nowrap;
+  text-shadow: none;
+  transform: translateX(-50%) rotate(-4deg);
+}
+
+/* La flecha que baja hacia la cinta, en el color claro de antes. Va dentro
+   de la impresión (sube con ella) y se desvanece en cuanto ella baja. El
+   trazo crece y se recoge; la punta viaja con su extremo. */
+.portada__linea {
+  position: absolute;
+  top: -68px;
+  left: calc(50% - 1px);
+  width: 2px;
+  height: 36px;
+  opacity: clamp(0, 1 - var(--p, 0) * 7, 1);
+}
+.portada__trazo {
+  position: absolute;
+  inset: 0;
+  border-radius: 1px;
+  background: var(--tinta-suave);
+  transform-origin: top;
+}
+/* Un cuadrito con dos bordes, girado: su esquina de abajo es la punta y
+   cae justo en el extremo del trazo. */
+.portada__punta {
+  position: absolute;
+  top: -11px;
+  left: -3.5px;
+  width: 9px;
+  height: 9px;
+  border-right: 2px solid var(--tinta-suave);
+  border-bottom: 2px solid var(--tinta-suave);
+  transform: translateY(36px) rotate(45deg);
+}
+
+/* Apaisado: la foto vertical se recorta arriba y abajo; el texto se queda
+   a la izquierda y la foto se centra en las caras. La nota se acerca a
+   ellos: a la derecha de sus caras, no en la orilla de la pantalla. */
+@media (min-aspect-ratio: 1/1) {
+  .portada__foto { object-position: 50% 38%; }
+  .portada__titulo { font-size: clamp(3rem, 1.6rem + 5vw, 7.5rem); max-width: 9ch; }
+  .portada__asoma { width: min(22vw, 240px); }
+  .portada__nota { top: 20%; right: max(var(--margen), 50% - 26rem); }
+}
+
+/* Entrada: solo con JS. Las palabras suben una detrás de otra; la foto se
+   asienta. Solo transform y opacidad.
+   Las palabras del título suben SIN opacidad: Chrome no cuenta como
+   pintado (LCP) lo que está en opacidad 0, y la foto a sangre no entra como
+   LCP; si el título empezaba invisible, su primer pintado se registraba
+   hasta que el hilo principal terminaba con el JavaScript (3.5 s medidos en
+   un teléfono de gama media). Visible desde el primer cuadro, cuenta ahí. */
+.con-js .portada__titulo .palabra {
+  animation: portada-subir 1.2s var(--ease-salida) both;
+  animation-delay: calc(0.15s + var(--i) * 0.09s);
+}
+.con-js .portada__sub,
+.con-js .portada__pista { animation: portada-fundir 1.2s var(--ease-salida) both 0.7s; }
+.con-js .portada__foto { animation: portada-asentar 2.4s var(--ease-suave) both; }
+.con-js .portada__revelado { animation: portada-revelar 2.6s var(--ease-suave) both 0.1s; }
+.con-js .portada__nota { animation: portada-pegar 0.9s var(--ease-salida) both 1.5s; }
+/* Los dibujitos aparecen uno tras otro mientras la foto termina de
+   revelarse, como si alguien los estuviera haciendo (el retraso de cada
+   uno va en Portada.jsx). La duración va aparte para no pisar ese retraso. */
+.con-js .portada__dibujos .dibujo {
+  animation-name: portada-dibujo;
+  animation-duration: 0.7s;
+  animation-timing-function: var(--ease-salida);
+  animation-fill-mode: both;
+}
+@keyframes portada-dibujo {
+  from { opacity: 0; transform: scale(0.6) rotate(-8deg); }
+}
+.con-js .portada__trazo { animation: portada-linea 2.8s var(--ease-suave) infinite 2s; }
+.con-js .portada__punta { animation: portada-punta 2.8s var(--ease-suave) infinite 2s; }
+@keyframes portada-subir {
+  from { transform: translateY(0.3em); }
+}
+@keyframes portada-fundir {
+  from { opacity: 0; transform: translateY(8px); }
+}
+@keyframes portada-asentar {
+  from { transform: scale(1.05); }
+}
+@keyframes portada-revelar {
+  from { opacity: 0.92; }
+}
+/* Crece de arriba abajo y se recoge hacia abajo, solo con transform y el
+   origen fijo arriba: animar transform-origin no se compone y corría en el
+   hilo principal durante todo el recorrido. */
+@keyframes portada-linea {
+  0% { transform: translateY(0) scaleY(0); }
+  45%, 55% { transform: translateY(0) scaleY(1); }
+  100% { transform: translateY(100%) scaleY(0); }
+}
+/* La punta sigue al extremo mientras crece (mismos tramos y curva que el
+   trazo), se queda ahí mientras se recoge y se apaga al final. */
+@keyframes portada-punta {
+  0% { opacity: 0; transform: translateY(0) rotate(45deg); }
+  45%, 88% { opacity: 1; transform: translateY(36px) rotate(45deg); }
+  100% { opacity: 0; transform: translateY(36px) rotate(45deg); }
+}
+/* Se pega: llega un poco más torcida y alta, y se asienta. */
+@keyframes portada-pegar {
+  from { opacity: 0; transform: translateY(-10px) rotate(9deg) scale(1.04); }
+}
+/* La pista va dentro de un translateX(-50%): la entrada lo conserva. */
+.con-js .portada__pista { animation-name: portada-fundir-pista; }
+@keyframes portada-fundir-pista {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px) rotate(-4deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .con-js .portada__titulo .palabra,
+  .con-js .portada__sub,
+  .con-js .portada__pista,
+  .con-js .portada__foto,
+  .con-js .portada__revelado,
+  .con-js .portada__nota,
+  .con-js .portada__dibujos .dibujo,
+  .con-js .portada__trazo,
+  .con-js .portada__punta { animation: none; }
+}

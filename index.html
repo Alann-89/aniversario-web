@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Arranca en el cielo de la tarde; src/nucleo/cielo.js lo lleva con el cielo hasta la noche. -->
+<meta name="theme-color" content="#DCE8EF">
+<meta name="description" content="Un regalo digital: nuestra historia, nuestros lugares, nuestra trivia y nuestros cupones.">
+<!-- Es un regalo para una persona, con fotos de personas reales: no se indexa.
+     La vista previa al compartir el link no depende de esto. -->
+<meta name="robots" content="noindex, nofollow">
+<title>Nuestra Historia</title>
+
+<!-- === Vista previa al compartir el link =============================
+     og:image y og:url tienen que ser URLs ABSOLUTAS: WhatsApp no resuelve
+     rutas relativas. PENDIENTE: sustituir TU-DOMINIO por el dominio real
+     DESPUÉS de publicar. preview.jpg mide 1200×630 y va en .jpg a
+     propósito: WhatsApp es irregular generando miniaturas desde webp. -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_MX">
+<meta property="og:site_name" content="Nuestra Historia">
+<meta property="og:title" content="Nuestra Historia">
+<meta property="og:description" content="Un regalo digital: un recorrido del atardecer a la noche.">
+<meta property="og:image" content="https://TU-DOMINIO/assets/fotos/preview.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="La portada de Nuestra Historia">
+<meta property="og:url" content="https://TU-DOMINIO/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Nuestra Historia">
+<meta name="twitter:description" content="Un regalo digital: un recorrido del atardecer a la noche.">
+<meta name="twitter:image" content="https://TU-DOMINIO/assets/fotos/preview.jpg">
+<meta name="twitter:image:alt" content="La portada de Nuestra Historia">
+
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/icono-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/images/icono-192.png">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+
+<!-- Marca que el JS está vivo. En línea y arriba: corre aunque el bundle no
+     llegue nunca. El CSS SOLO esconde lo que se revela con animación bajo
+     esta clase; sin ella la página se ve entera.
+     Red de seguridad: si en 8 s el bundle no ha dado señal (red mala, un
+     bloqueador), se quita la clase y la página se ve entera, sin
+     movimiento. Sin esto, lo que espera a revelarse se quedaría escondido
+     para siempre: se midió con la versión anterior y quedaban 48 textos
+     invisibles. -->
+<script>
+  document.documentElement.classList.add("con-js");
+  setTimeout(function () {
+    if (!window.__vivo) document.documentElement.classList.remove("con-js");
+  }, 8000);
+</script>
+</head>
+<body>
+<div id="root"></div>
+<script type="module" src="/src/main.jsx"></script>
+</body>
+</html>

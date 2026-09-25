@@ -1,0 +1,328 @@
+/* =========================================================================
+   index.css — tokens, fuentes, base y las primitivas compartidas
+   -------------------------------------------------------------------------
+   Cada tramo tiene su propia hoja (importadas al final). Aquí solo vive lo
+   que usan varios: los siete colores, las dos familias, las dos curvas, el
+   papel, la cinta, el botón de tinta y el revelado.
+   ========================================================================= */
+
+/* Las importaciones van primero (CSS ignora un @import después de otras
+   reglas). Una hoja por tramo, en el orden del recorrido.
+   Tailwind SIN escanear archivos, `source(none)`: el sitio no usa ni una
+   utilidad (todo son clases propias), y el escaneo recogía palabras de los
+   .md, de legacy/ y de los comentarios ("transform", "rounded-[2.5rem]"…)
+   y metía ~90 utilidades y 59 @property que nadie usaba. */
+@import "tailwindcss" source(none);
+@import "./cielo.css";
+@import "./portada.css";
+@import "./subida.css";
+@import "./galeria.css";
+@import "./mapa.css";
+@import "./escenario.css";
+@import "./puerta.css";
+@import "./umbral.css";
+@import "./adentro.css";
+@import "./salida.css";
+@import "./afuera.css";
+@import "./casete.css";
+
+/* --- Fuentes -------------------------------------------------------------
+   Servidas desde el mismo dominio (una hoja de Google Fonts bloqueaba el
+   render ~1.6 s con la pantalla en blanco). Solo woff2 y solo el
+   subconjunto latino, que cubre el español. Cuatro caras y ninguna más:
+   Cormorant 600 y su itálica para lo grande, Nunito 400 y 700 para el
+   texto. prerender.js precarga las dos que pinta la portada. */
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../../node_modules/@fontsource/cormorant-garamond/files/cormorant-garamond-latin-600-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../../node_modules/@fontsource/cormorant-garamond/files/cormorant-garamond-latin-600-italic.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../../node_modules/@fontsource/nunito/files/nunito-latin-400-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../../node_modules/@fontsource/nunito/files/nunito-latin-700-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* =========================================================================
+   Tokens. `--*: initial` vacía el tema entero de Tailwind (paleta, escala
+   de espacios, tamaños, radios, sombras, curvas): `bg-slate-900`,
+   `p-4`, `rounded-lg` o `shadow-md` no existen en este proyecto y no se
+   pueden escribir ni por accidente. Solo quedan los de este sistema.
+   Los colores son SIETE. Todo lo demás es color-mix de estos. Si cambias
+   uno, cámbialo también en src/nucleo/cielo.js (TOKENS).
+   ========================================================================= */
+@theme {
+  --*: initial;
+
+  --color-papel: #F5EFE7;    /* el papel de todo lo que se toca; texto de noche */
+  --color-cielo: #DCE8EF;    /* la tarde fría al empezar la subida */
+  --color-tarde: #ECCAB6;    /* el durazno al terminarla */
+  --color-noche: #16202F;    /* la noche, y la tinta del día */
+  --color-escarcha: #AAB7C8; /* texto secundario de noche; nieve y crestas */
+  --color-sello: #9A3E50;    /* lo accionable: sello, rutas, fechas, fallos */
+  --color-ambar: #F0AE58;    /* solo la cabaña: ventanas, lámpara, pomo */
+
+  --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-texto: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Las dos curvas del sitio (ver DESIGN.md › Movimiento). */
+  --ease-salida: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-suave: cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+@layer base {
+  :root {
+    --margen: clamp(20px, 6vw, 48px);
+    --columna: 34rem;
+    /* El interior de la cabaña: la sombra del ámbar. Fijada en hex porque
+       mezclar ámbar con la noche en cualquier espacio de color daba un
+       pardo gris sin calor. Papel encima: 12.74:1. */
+    --interior: #3A2415;
+    /* El cuarto, derivado del interior: lo dibujan la habitación, el vano
+       del umbral y la pared de la salida, y tiene que ser el mismo en los
+       tres (un solo cuarto). */
+    --madera: color-mix(in oklab, var(--interior) 70%, var(--color-ambar));
+    --repisa: color-mix(in oklab, var(--interior) 62%, var(--color-ambar));
+    --cable: color-mix(in oklab, var(--color-papel) 30%, var(--interior));
+    --carton: color-mix(in oklab, var(--color-papel) 80%, var(--color-ambar));
+    /* Dos capas, siempre: contacto corto y nítido + caída larga y blanda.
+       Una sola sombra difusa es la firma de la plantilla. */
+    --sombra: 0 1px 1px color-mix(in srgb, var(--color-noche) 22%, transparent),
+      0 16px 30px -16px color-mix(in srgb, var(--color-noche) 50%, transparent);
+    --tinta: var(--color-noche);
+    --tinta-suave: color-mix(in oklab, var(--color-noche) 74%, var(--color-cielo));
+    --foco: var(--color-sello);
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    background: var(--color-noche);
+  }
+  body {
+    background: var(--color-cielo);
+    color: var(--tinta);
+    font-family: var(--font-texto);
+    font-size: 17px;
+    line-height: 1.6;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+  }
+  :focus-visible {
+    outline: 2px solid var(--foco);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+  button { cursor: pointer; }
+  p, li, figcaption { text-wrap: pretty; }
+  h1, h2, h3 { text-wrap: balance; }
+  img { max-width: 100%; }
+}
+
+@layer components {
+  .display {
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+  .columna {
+    width: min(100% - 2 * var(--margen), var(--columna));
+    margin-inline: auto;
+  }
+  /* El color del texto va por sección y NO cambia con el scroll: de día
+     (el valor de :root) o de noche. */
+  .de-noche {
+    --tinta: var(--color-papel);
+    --tinta-suave: var(--color-escarcha);
+    /* El vino no se lee sobre la noche (2.4:1): de noche el foco y el sello
+       se estampan en su versión clara. */
+    --foco: color-mix(in oklab, var(--color-sello) 45%, var(--color-papel));
+    color: var(--tinta);
+    /* La luna está fija y el texto de noche pasa por delante al hacer
+       scroll: en algún cuadro una línea clara cruza la luna clara. Este halo
+       del color de la noche garantiza que se lea hasta encima de ella. */
+    text-shadow: 0 0 2px var(--color-noche), 0 0 14px var(--color-noche);
+  }
+
+  .solo-lectores {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .saltar {
+    position: fixed;
+    left: 12px;
+    top: 12px;
+    z-index: 60;
+    padding: 12px 18px;
+    min-height: 44px;
+    background: var(--color-noche);
+    color: var(--color-papel);
+    font-size: 15px;
+    transform: translateY(-160%);
+    transition: transform 0.2s var(--ease-salida);
+  }
+  .saltar:focus-visible { transform: none; }
+
+  /* ---- El papel: todo lo que se toca es papel, plano. -------------------
+     Sin grano ni fibra. Lo que lo hace papel y no rectángulo es el canto
+     (un filo claro arriba), la sombra de contacto y el giro. */
+  .papel,
+  .impresion {
+    background: var(--color-papel);
+    color: var(--color-noche);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, white 70%, transparent), var(--sombra);
+    text-shadow: none;
+    --tinta: var(--color-noche);
+    --tinta-suave: color-mix(in oklab, var(--color-noche) 74%, var(--color-papel));
+    --foco: var(--color-sello);
+  }
+
+  /* ---- La cinta: translúcida y cortada en pico a mano. ------------------ */
+  .cinta {
+    position: absolute;
+    z-index: 2;
+    width: 74px;
+    height: 22px;
+    background: color-mix(in srgb, var(--color-tarde) 70%, transparent);
+    clip-path: polygon(0 12%, 6% 0, 94% 6%, 100% 0, 97% 50%, 100% 100%, 5% 94%, 0 100%, 3% 50%);
+    pointer-events: none;
+  }
+
+  /* ---- La impresión: la foto con su margen de papel. -------------------
+     Margen desigual (9 9 10) y la fecha estampada en ámbar, como el reloj
+     de las cámaras de rollo. Sin foto: papel liso con una cámara, que
+     desaparece en cuanto llega la foto. */
+  .impresion {
+    position: relative;
+    display: block;
+    padding: 9px 9px 10px;
+  }
+  .impresion__marco {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: color-mix(in oklab, var(--color-papel) 88%, var(--color-escarcha));
+  }
+  .impresion__foto { width: 100%; height: 100%; object-fit: cover; }
+  .impresion__espera {
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    color: var(--tinta-suave);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+  .impresion__espera svg { width: 24px; height: 24px; }
+  .impresion__fecha {
+    position: absolute;
+    right: 16px;
+    bottom: 17px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-ambar);
+  }
+  .impresion--vacia .impresion__fecha { display: none; }
+
+  /* ---- La tinta: el botón es un sello. ---------------------------------- */
+  .tinta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 10px 18px;
+    border: 1.5px solid currentColor;
+    border-radius: 2px;
+    background: none;
+    color: var(--color-sello);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    transition: transform 0.16s var(--ease-salida), background-color 0.2s var(--ease-salida);
+  }
+  .tinta svg { width: 16px; height: 16px; flex: none; }
+  .tinta--fuerte {
+    background: var(--color-sello);
+    border-color: var(--color-sello);
+    color: var(--color-papel);
+  }
+  /* Lo que se pulsa se hunde; no se levanta. */
+  .tinta:active { transform: translateY(1px) scale(0.985); }
+  @media (hover: hover) {
+    .tinta:hover { background: color-mix(in srgb, currentColor 10%, transparent); }
+    .tinta--fuerte:hover { background: color-mix(in oklab, var(--color-sello) 88%, var(--color-noche)); }
+  }
+
+  /* ---- Revelar: SOLO se esconde bajo .con-js. Sin JS se ve todo. -------- */
+  .revelar {
+    transition: opacity 0.7s var(--ease-salida), transform 0.7s var(--ease-salida);
+  }
+  .con-js .revelar:not(.visto) {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+/* ---- Chispas y fibras (src/nucleo/efectos.js) ---------------------------------- */
+.chispa,
+.fibra {
+  position: fixed;
+  z-index: 70;
+  pointer-events: none;
+  animation: saltar-y-caer 1s var(--ease-salida) both;
+}
+.chispa {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-ambar);
+}
+.fibra {
+  width: 2px;
+  height: 7px;
+  background: color-mix(in oklab, var(--color-papel) 70%, var(--color-ambar));
+  animation-duration: 1.2s;
+}
+@keyframes saltar-y-caer {
+  from { opacity: 1; transform: translate(0, 0) rotate(0); }
+  to { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--giro, 0deg)); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .revelar { transition: none; }
+  .con-js .revelar:not(.visto) { opacity: 1; transform: none; }
+}

@@ -1,0 +1,28 @@
+# En el repositorio va solo lo necesario para que el sitio funcione y se construya.
+
+# Dependencias y lo que genera el build
+node_modules/
+dist/
+dist-ssr/
+
+# Herramientas de IA y de diseño: configuración local de cada quien
+.agents/
+.claude/
+.codex/
+.impeccable/
+.mcp.json
+skills-lock.json
+
+# Documentos de trabajo (se quedan en local)
+*.md
+
+# De tools/ solo va lo que usa el build; la suite de pruebas vive en local
+tools/*
+!tools/prerender.js
+!tools/servidor.js
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.vscode/
+*.log

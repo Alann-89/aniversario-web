@@ -1,0 +1,48 @@
+/* =========================================================================
+   El umbral — de la cabaña a lo lejos, a cruzar su puerta (Umbral.jsx)
+   -------------------------------------------------------------------------
+   Derivados de --p (el recorrido pegajoso, --umbral-recorrido):
+     --z  la cámara se acerca a la puerta   0.08 → fundido (escala 1 → 45, en z²)
+     --o  la hoja se abre                   0.34 → 0.54
+     la escena se desvanece                 fundido → fundido + 0.10
+   El desvanecido empieza cuando la puerta ya llena la pantalla hasta en
+   escritorio: lo que sigue aparece A TRAVÉS de ella. Con más espacio entre
+   el acercamiento y el desvanecido quedaba medio recorrido de color liso.
+   Y es corto: mientras dura se ven dos imágenes a la vez.
+   ========================================================================= */
+.umbral {
+  height: calc(100vh + var(--umbral-recorrido));
+  --z: clamp(0, (var(--p, 0) - 0.08) / (var(--umbral-fundido) - 0.08), 1);
+  --o: clamp(0, (var(--p, 0) - 0.34) / 0.2, 1);
+}
+.umbral .escena__escenario { opacity: clamp(0, (var(--umbral-fundido) + 0.1 - var(--p, 0)) / 0.1, 1); }
+
+/* La cámara: escala con el origen en el centro de la puerta y la sube al
+   centro de la pantalla a la vez, para que el vano la cubra entera. */
+.umbral__camara {
+  transform-box: view-box;
+  transform-origin: 600px 696px;
+  transform: translateY(calc(var(--z) * -246px)) scale(calc(1 + 44 * var(--z) * var(--z)));
+}
+
+.umbral__dentro { fill: var(--interior); }
+.umbral__cable { stroke: var(--cable); stroke-width: 0.25; }
+.umbral__foco { fill: var(--color-ambar); }
+.umbral__piso { fill: color-mix(in oklab, var(--interior) 70%, var(--color-noche)); }
+.umbral__hoja {
+  fill: color-mix(in oklab, var(--color-noche) 70%, var(--color-escarcha));
+  /* Abierta al 10 % y escalada ×45 era una franja gris en el borde. */
+  opacity: clamp(0, 1 - (var(--z) - 0.7) * 4, 1);
+}
+.umbral__pomo { fill: color-mix(in oklab, var(--color-papel) 70%, var(--color-escarcha)); }
+/* La nieve cae delante mientras ella está afuera; se acaba al llegar al
+   vano, que es cuando la puerta ya llena la pantalla hasta en escritorio. */
+.umbral .nevada { opacity: clamp(0, (0.75 - var(--z)) / 0.2, 1); }
+.umbral__nota rect { fill: var(--color-papel); }
+.umbral__nota text {
+  fill: var(--color-noche);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 2.6px;
+}

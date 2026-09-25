@@ -1,0 +1,154 @@
+/* =========================================================================
+   Lo que comparten las escenas de noche: suelo, pinos y la cabaña
+   -------------------------------------------------------------------------
+   Todo sale de mezclar la noche con la escarcha: lejos, más claro; cerca,
+   casi noche. Así la profundidad la da el valor, no una textura.
+   ========================================================================= */
+.cresta { fill: color-mix(in oklab, var(--color-noche) 84%, var(--color-escarcha)); }
+.suelo { fill: color-mix(in oklab, var(--color-noche) 58%, var(--color-escarcha)); }
+.suelo--lejos { fill: color-mix(in oklab, var(--color-noche) 74%, var(--color-escarcha)); }
+.pinos { fill: color-mix(in oklab, var(--color-noche) 90%, var(--color-escarcha)); }
+.pinos--lejos { fill: color-mix(in oklab, var(--color-noche) 80%, var(--color-escarcha)); }
+
+.cabana__techo,
+.cabana__oscuro { fill: color-mix(in oklab, var(--color-noche) 92%, var(--color-escarcha)); }
+.cabana__nieve { fill: color-mix(in oklab, var(--color-papel) 82%, var(--color-escarcha)); }
+.cabana__muro { fill: color-mix(in oklab, var(--color-noche) 78%, var(--color-escarcha)); }
+.cabana__ventana { fill: color-mix(in oklab, var(--color-noche) 94%, var(--color-escarcha)); }
+.cabana__marco {
+  fill: none;
+  stroke: color-mix(in oklab, var(--color-noche) 78%, var(--color-escarcha));
+  stroke-width: 2.4;
+}
+.cabana__luz,
+.cabana__derrame { fill: var(--color-ambar); }
+/* Adentro hay fuego: cada ventana late con su propio periodo, y la puerta
+   con otro. Solo opacidad, y nunca por debajo de 0.8: es un fuego, no una
+   bombilla que falla. */
+.cabana__luz rect { animation: latir 3.4s ease-in-out infinite alternate; }
+.cabana__luz rect:nth-child(2) { animation-duration: 4.1s; animation-delay: -1.3s; }
+.cabana__luz rect:nth-child(3) { animation-duration: 2.9s; animation-delay: -0.7s; }
+@keyframes latir {
+  from { opacity: 0.8; }
+}
+/* La luz sobre la nieve la aclara hacia el ámbar (`screen`). */
+.cabana__derrame { mix-blend-mode: screen; }
+.luz stop { stop-color: var(--color-ambar); }
+
+/* El humo: seis bocanadas tenues, una cada 1.2 s, que suben, se abren, se
+   van con el viento y se deshacen. Encimadas forman la columna; una sola
+   bocanada opaca se leía como una pelota. */
+.humo stop { stop-color: color-mix(in oklab, var(--color-escarcha) 70%, var(--color-papel)); }
+.cabana__humo circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: humo 7.2s linear infinite;
+}
+.cabana__humo circle:nth-child(2) { animation-delay: -1.2s; }
+.cabana__humo circle:nth-child(3) { animation-delay: -2.4s; }
+.cabana__humo circle:nth-child(4) { animation-delay: -3.6s; }
+.cabana__humo circle:nth-child(5) { animation-delay: -4.8s; }
+.cabana__humo circle:nth-child(6) { animation-delay: -6s; }
+@keyframes humo {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.6); }
+  10% { opacity: 0.45; }
+  60% { opacity: 0.24; transform: translate(-8px, -46px) scale(1.9); }
+  100% { opacity: 0; transform: translate(-22px, -84px) scale(2.8); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cabana__luz rect { animation: none; }
+  /* Quieto, el humo es una sola voluta que ya subió un poco. */
+  .cabana__humo circle { animation: none; }
+  .cabana__humo circle:first-child { opacity: 0.4; transform: translate(-6px, -24px) scale(1.5); }
+}
+
+/* La nieve que cae (src/nucleo/nevada.js): encima del dibujo, sin punteros. */
+.nevada {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+html:not(.con-js) .nevada { display: none; }
+
+/* ---- El fuego de la habitación -------------------------------------------
+   No se ve la chimenea: se ve su luz, que late en la pared desde abajo a la
+   derecha. Dos osciladores de periodo distinto para que el latido no se
+   repita a ojo. Lo comparten la habitación y la pared de la salida (es el
+   mismo cuarto). */
+.fuego {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(70% 45% at 88% 100%, color-mix(in srgb, var(--color-ambar) 30%, transparent), transparent 70%),
+    radial-gradient(38% 26% at 94% 100%, color-mix(in srgb, var(--color-sello) 22%, transparent), transparent 70%);
+  transform-origin: 100% 100%;
+  animation: fuego 3.4s ease-in-out infinite alternate, fuego-lento 7.3s ease-in-out infinite alternate;
+}
+@keyframes fuego {
+  from { opacity: 0.55; }
+}
+@keyframes fuego-lento {
+  to { transform: scale(1.06); }
+}
+/* El halo de una lámpara: la bombilla encendida aclara el aire a su
+   alrededor. */
+.halo {
+  position: absolute;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-ambar) 34%, transparent), color-mix(in srgb, var(--color-ambar) 10%, transparent) 45%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fuego { animation: none; opacity: 0.8; }
+}
+
+/* ---- La línea de tiempo de las puertas -------------------------------------
+   Cuánto dura cada cruce (el recorrido pegajoso) y en qué punto empieza a
+   desvanecerse sobre lo que va solapado debajo. De aquí salen la altura de
+   la escena, su fundido y el margen negativo del tramo siguiente, que ya no
+   es un número hecho a mano en otro archivo: si se alarga el umbral, la
+   habitación se recoloca sola. */
+:root {
+  --umbral-recorrido: 160vh;
+  --umbral-fundido: 0.64;
+  --salida-recorrido: 100vh;
+  --salida-fundido: 0.62;
+}
+
+/* ---- Escenas pegajosas ----------------------------------------------------
+   Un contenedor más alto que la pantalla con un escenario `sticky` dentro:
+   mientras ella baja, la escena se queda quieta y el scroll hace de cámara.
+   Sin JavaScript no hay cámara: la escena se aplana a su primer cuadro. */
+.escena { position: relative; }
+.escena__escenario {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+/* El dibujo es decoración: sin punteros, el navegador no tiene que buscar
+   bajo cada evento de rueda o de dedo cuál de sus cien formas se tocó
+   (medido: ~20 ms de hit-testing por tramo con CPU ×4). */
+.escena__escenario > svg { display: block; width: 100%; height: 100%; pointer-events: none; }
+html:not(.con-js) .escena { height: auto; }
+html:not(.con-js) .escena__escenario { position: relative; height: 70vh; }
+
+/* Las dos puertas: solapadas con lo que viene, son decoración y no reciben
+   punteros (se comerían los tirones de los boletos). La hoja se abre sobre
+   su bisagra. */
+.umbral,
+.salida {
+  z-index: 2;
+  pointer-events: none;
+}
+.umbral__hoja,
+.salida__hoja {
+  transform-box: fill-box;
+  transform-origin: left center;
+  transform: scaleX(calc(1 - 0.9 * var(--o)));
+}

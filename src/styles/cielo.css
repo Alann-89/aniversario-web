@@ -1,0 +1,103 @@
+/* =========================================================================
+   El cielo y el anochecer — la capa fija de detrás (Cielo.jsx)
+   -------------------------------------------------------------------------
+   Su color, el sol, la luna, las estrellas y la ladera salen de variables
+   que escribe src/nucleo/cielo.js en ESTE elemento (no en :root: así un cambio por
+   cuadro solo invalida esta capa). Sin JavaScript las variables no existen
+   y cada una cae a su valor de la tarde: cielo claro, sol, ladera a la
+   vista. Solo se anima transform y opacidad.
+   ========================================================================= */
+.cielo {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: var(--cielo, var(--color-cielo));
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+}
+.app {
+  position: relative;
+  z-index: 1;
+}
+
+.cielo__estrellas {
+  position: absolute;
+  inset: 0 0 30%;
+  width: 100%;
+  height: 70%;
+  fill: var(--color-papel);
+  opacity: var(--estrellas, 0);
+}
+.cielo__luna,
+.cielo__sol {
+  position: absolute;
+  width: clamp(44px, 11vw, 64px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+.cielo__luna {
+  top: 11vh;
+  left: 68%;
+  background: var(--color-papel);
+  opacity: min(1, calc(var(--luna, 0) * 3));
+  transform: translateY(calc((1 - var(--luna, 0)) * 40vh));
+}
+/* El sol baja un poco durante la subida (--subir) y se hunde detrás de la
+   ladera en el anochecer (--sol). Se apaga mientras está escondido, ANTES
+   de que la ladera baje: si no, al bajar quedaba a la vista y había dos
+   lunas (se vio en la otra versión). */
+.cielo__sol {
+  top: 44vh;
+  left: 58%;
+  width: clamp(56px, 14vw, 88px);
+  background: color-mix(in oklab, var(--color-papel) 70%, var(--color-ambar));
+  opacity: clamp(0, (0.95 - var(--sol, 0)) * 8, 1);
+  transform: translateY(calc(var(--subir, 0) * 6vh + var(--sol, 0) * 32vh));
+}
+
+/* ---- La ladera: tres crestas y una fila de pinos ------------------------
+   Colores planos derivados del cielo: anochecen solas. Lo lejano, más
+   claro y cercano al cielo; lo cercano, casi noche. En la subida suben un
+   poco (se está subiendo); al final del anochecer bajan fuera del cuadro,
+   cada una a su ritmo, y queda la noche. */
+.ladera {
+  position: absolute;
+  inset: auto 0 0;
+  height: clamp(200px, 36vh, 380px);
+}
+.ladera__capa {
+  position: absolute;
+  inset: auto 0 0;
+  width: 100%;
+  transform: translateY(calc((1 - var(--subir, 0)) * var(--hundido) + var(--bajar, 0) * 115%));
+}
+.ladera__capa--lejos {
+  height: 100%;
+  --hundido: 18px;
+  fill: color-mix(in oklab, var(--cielo, var(--color-cielo)) 72%, var(--color-escarcha));
+}
+.ladera__capa--medio {
+  height: 82%;
+  --hundido: 32px;
+  fill: color-mix(in oklab, color-mix(in oklab, var(--cielo, var(--color-cielo)), var(--color-noche) 22%) 80%, var(--color-escarcha));
+}
+.ladera__capa--cerca {
+  height: 62%;
+  --hundido: 48px;
+  fill: color-mix(in oklab, var(--cielo, var(--color-cielo)), var(--color-noche) 42%);
+}
+.ladera__capa--pinos {
+  height: 34%;
+  --hundido: 64px;
+  fill: color-mix(in oklab, var(--cielo, var(--color-cielo)), var(--color-noche) 70%);
+}
+
+/* El anochecer solo marca cuánto dura: lo que se ve está en la capa fija. */
+.anochecer { height: 220vh; }
+
+/* Sin JavaScript no hay rampa: el anochecer no existe y cada sección de
+   noche pinta su propio fondo. */
+html:not(.con-js) .anochecer { display: none; }
+html:not(.con-js) .fondo-noche { background: var(--color-noche); }
+

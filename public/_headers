@@ -1,0 +1,16 @@
+# Cabeceras para el hosting (Netlify y Cloudflare Pages leen este archivo;
+# en otro hosting, configura lo mismo a mano).
+#
+# Lo que lleva hash en el nombre no cambia nunca: se guarda un año sin
+# volver a preguntar. index.html sí cambia en cada build: se revalida
+# siempre, para que un arreglo le llegue aunque ya haya abierto el regalo.
+/assets/*.js
+  Cache-Control: public, max-age=31536000, immutable
+/assets/*.css
+  Cache-Control: public, max-age=31536000, immutable
+/assets/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+/index.html
+  Cache-Control: no-cache
+/
+  Cache-Control: no-cache

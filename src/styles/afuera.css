@@ -1,0 +1,104 @@
+/* =========================================================================
+   Afuera — la travesía por la nieve (Afuera.jsx)
+   ========================================================================= */
+.afuera {
+  z-index: 1;
+}
+/* Con JS, solapada bajo la salida como la habitación bajo el umbral: el
+   recorrido de la travesía empieza justo cuando la salida se desvanece. */
+.con-js .afuera { margin-top: calc(-100vh - var(--salida-recorrido) * (1 - var(--salida-fundido))); }
+.con-js .afuera__recorrido { height: 220vh; }
+/* Nieve pisada: más oscura que la nieve, del color de la sombra. */
+.afuera__huellas { fill: color-mix(in oklab, var(--color-noche) 82%, var(--color-escarcha)); }
+/* Sin JavaScript no hay cámara: el cuadro final (la cabaña lejos, el
+   rastro completo) sobre su propia noche. */
+html:not(.con-js) .afuera { background: var(--color-noche); }
+
+/* =========================================================================
+   La carta — sube encima del campo y se despliega al acercarse
+   ========================================================================= */
+.carta {
+  position: relative;
+  --columna: 32rem;
+  perspective: 900px;
+}
+.carta .cinta { z-index: 3; top: -11px; left: 50%; margin-left: -37px; transform: rotate(-3deg); }
+/* Se levanta desde su borde de abajo hasta quedar de frente, con su cinta:
+   el pliegue mueve a las dos juntas. Sin JS --p no existe y está abierta. */
+.carta__plegable {
+  position: relative;
+  transform-origin: 50% 100%;
+  transform: rotateX(calc((1 - var(--p, 1)) * 60deg)) translateY(calc((1 - var(--p, 1)) * 40px)) rotate(-0.8deg);
+}
+.carta[data-abierta] .carta__plegable { transform: rotate(-0.8deg); }
+.carta__hoja {
+  position: relative;
+  padding: clamp(26px, 4vh, 38px) 26px clamp(30px, 4.5vh, 42px);
+  /* El canto de abajo, rasgado a mano. */
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), 94% 100%, 87% calc(100% - 5px), 79% calc(100% - 1px), 71% calc(100% - 7px), 63% calc(100% - 2px), 55% calc(100% - 6px), 46% 100%, 38% calc(100% - 5px), 29% calc(100% - 1px), 21% calc(100% - 6px), 13% calc(100% - 2px), 6% calc(100% - 7px), 0 calc(100% - 3px));
+}
+/* Los dobleces en tercios: se borran conforme se abre. */
+.carta__hoja::before,
+.carta__hoja::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: color-mix(in oklab, var(--color-noche) 14%, var(--color-papel));
+  opacity: calc(1 - var(--p, 1));
+}
+.carta__hoja::before { top: 33.3%; }
+.carta__hoja::after { top: 66.6%; }
+.carta__titulo {
+  font-style: italic;
+  font-size: clamp(1.9rem, 1.5rem + 1.6vw, 2.4rem);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+}
+.carta__texto { margin-top: 12px; max-width: 40ch; }
+.carta__firma { margin-top: 14px; font-style: italic; font-size: 20px; }
+/* Un corazoncito de tinta después de la firma, como se firma a mano. */
+.carta__firma svg {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-left: 6px;
+  vertical-align: -1px;
+  fill: var(--color-sello);
+  stroke: var(--color-sello);
+}
+.carta__regalo {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid color-mix(in oklab, var(--color-sello) 50%, var(--color-papel));
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  line-height: 1.22;
+  color: var(--color-sello);
+}
+.carta__regalo svg { flex: none; width: 24px; height: 24px; margin-top: 2px; }
+/* Al abrirse del todo la carta, el regalito se asoma: un saltito. */
+.carta[data-abierta] .carta__regalo svg { animation: regalito 0.9s var(--ease-salida) 0.3s both; }
+@keyframes regalito {
+  0% { transform: none; }
+  30% { transform: translateY(-5px) rotate(-8deg); }
+  55% { transform: translateY(0) rotate(4deg); }
+  75% { transform: rotate(-2deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .carta[data-abierta] .carta__regalo svg { animation: none; }
+}
+.carta__nota { margin-top: 8px; font-size: 15px; color: var(--tinta-suave); }
+
+/* El pie, sobre la nieve. */
+.pie {
+  position: relative;
+  padding: 22px var(--margen) max(22px, env(safe-area-inset-bottom));
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-papel);
+}
+.pie__corazon { display: inline-block; width: 14px; height: 14px; vertical-align: -2px; fill: var(--color-sello); }

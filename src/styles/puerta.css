@@ -1,0 +1,215 @@
+/* =========================================================================
+   La puerta — la trivia dentro de un sobre, y la cabaña a lo lejos
+   ========================================================================= */
+.puerta { padding-block: clamp(56px, 9vh, 104px) clamp(24px, 4vh, 48px); }
+.puerta__titulo {
+  font-size: clamp(2.4rem, 1.4rem + 4.4vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+.puerta__sub { margin-top: 10px; color: var(--tinta-suave); }
+
+/* ---- El sobre ------------------------------------------------------------ */
+.sobre {
+  position: relative;
+  --columna: 30rem;
+  margin-top: clamp(40px, 7vh, 64px);
+  padding: 0 22px 22px;
+  transform: rotate(0.6deg);
+}
+/* La solapa: un triángulo de papel que se voltea hacia arriba sobre su
+   bisagra al abrirse (transform, no opacidad: el gesto es lo que cuenta). */
+.sobre__solapa {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  height: 104px;
+  background: color-mix(in oklab, var(--color-papel) 90%, var(--color-tarde));
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top;
+  transition: transform 0.7s var(--ease-salida);
+}
+.sobre--abierto .sobre__solapa { transform: scaleY(-0.55); }
+
+.sobre__cierre {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  min-height: 210px;
+  padding-top: 72px;
+}
+.sobre__lacre {
+  position: relative;
+  z-index: 3;
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  /* La cera aplastada no es un círculo. */
+  border-radius: 46% 54% 52% 48% / 50% 47% 53% 50%;
+  background: var(--color-sello);
+  color: var(--color-papel);
+  box-shadow: var(--sombra);
+  transition: transform 0.16s var(--ease-salida);
+}
+.sobre__lacre svg { width: 24px; height: 24px; }
+.sobre__lacre:active { transform: scale(0.94); }
+/* Mientras el sobre sigue cerrado, del lacre salen ondas, como un latido:
+   "tócame". Van en un anillo aparte para no pelear con el :active. Se
+   acaban al abrirlo. */
+.sobre__lacre::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  border: 2px solid var(--color-sello);
+  opacity: 0;
+  pointer-events: none;
+}
+.con-js .sobre:not(.sobre--abierto) .sobre__lacre::after { animation: lacre-onda 2.6s var(--ease-salida) infinite 1.2s; }
+@keyframes lacre-onda {
+  0% { opacity: 0.55; transform: scale(1); }
+  60%, 100% { opacity: 0; transform: scale(1.7); }
+}
+@media (hover: hover) {
+  .sobre__lacre:hover { transform: rotate(-6deg) scale(1.04); }
+}
+.sobre__invita {
+  margin-top: 14px;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: var(--tinta-suave);
+}
+
+/* Con JS: cerrado se ve el cierre; abierto, la trivia. Sin JS, el sobre ya
+   viene abierto con las tres preguntas a la vista. */
+.con-js .sobre:not(.sobre--abierto) .trivia,
+.sobre--abierto .sobre__cierre,
+html:not(.con-js) .sobre__cierre { display: none; }
+html:not(.con-js) .sobre__solapa { transform: scaleY(-0.55); }
+.sobre--abierto .trivia { animation: trivia-salir 0.5s var(--ease-salida) both 0.15s; }
+@keyframes trivia-salir {
+  from { opacity: 0; transform: translateY(12px); }
+}
+
+.trivia { padding-top: 40px; }
+
+/* ---- Un punto por pregunta (decisión de Alan, 22 sep 2026) -------------- */
+.progreso {
+  display: flex;
+  gap: 10px;
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+}
+.progreso li {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in oklab, var(--color-noche) 30%, var(--color-papel));
+}
+.progreso li[data-estado="actual"] { border-color: var(--color-noche); }
+.progreso li[data-estado="bien"] { background: var(--color-noche); border-color: var(--color-noche); }
+.progreso li[data-estado="mal"] { background: var(--color-sello); border-color: var(--color-sello); }
+
+.pregunta { border: 0; margin: 0; padding: 0; min-width: 0; }
+.pregunta + .pregunta { margin-top: 36px; }
+.con-js .pregunta:not(.pregunta--actual) { display: none; }
+.con-js .pregunta--actual { animation: trivia-salir 0.4s var(--ease-salida) both; }
+.pregunta__texto {
+  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 1.9rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  outline: none;
+}
+
+/* Las opciones: filas del mismo papel separadas por un filete. La marca
+   de tinta va encima, en la propia fila: nunca se repinta el botón. */
+.opciones {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  border-bottom: 1px solid color-mix(in oklab, var(--color-noche) 16%, var(--color-papel));
+}
+.opcion {
+  width: 100%;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 4px;
+  border: 0;
+  border-top: 1px solid color-mix(in oklab, var(--color-noche) 16%, var(--color-papel));
+  background: none;
+  color: var(--color-noche);
+  font: inherit;
+  font-size: 17px;
+  text-align: left;
+}
+.opcion > span:first-child { transition: transform 0.2s var(--ease-salida); }
+.opcion[aria-disabled="true"] { cursor: default; }
+.opcion[data-estado="apagada"] { color: var(--tinta-suave); }
+.opcion[data-estado="mal"] { color: var(--color-sello); }
+/* Fallar se siente: la opción elegida tiembla un momento. */
+.opcion[data-estado="mal"] > span:first-child { animation: temblar 0.42s var(--ease-salida); }
+@keyframes temblar {
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+.opcion__marca { width: 22px; height: 22px; flex: none; animation: marca 0.25s var(--ease-salida) both; }
+.opcion__marca svg { width: 100%; height: 100%; }
+@keyframes marca {
+  from { opacity: 0; transform: scale(0.9); }
+}
+.opcion:active:not([aria-disabled]) > span:first-child { transform: translateX(3px); }
+@media (hover: hover) {
+  .opcion:not([aria-disabled]):hover > span:first-child { transform: translateX(6px); }
+}
+
+.trivia__reaccion {
+  min-height: 1.6em;
+  margin-top: 14px;
+  font-size: 16px;
+  color: var(--tinta-suave);
+}
+.trivia__siguiente { width: 100%; margin-top: 12px; }
+@media (min-width: 560px) {
+  .trivia__siguiente { width: auto; }
+}
+
+.premio { outline: none; }
+.premio__titulo {
+  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 1.9rem);
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+}
+.premio__texto { margin-top: 12px; color: var(--tinta-suave); }
+.premio__llave {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: var(--color-sello);
+}
+.premio__llave svg { width: 20px; height: 20px; }
+.premio__otra { margin-top: 20px; }
+.trivia__pendiente {
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--tinta-suave);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sobre__solapa { transition: none; }
+  .sobre--abierto .trivia,
+  .con-js .pregunta--actual,
+  .opcion__marca,
+  .opcion[data-estado="mal"] > span:first-child,
+  .con-js .sobre:not(.sobre--abierto) .sobre__lacre::after { animation: none; }
+}

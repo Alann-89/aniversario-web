@@ -1,0 +1,110 @@
+/* =========================================================================
+   El mapa — una hoja de papel sobre la noche (Mapa.jsx)
+   ========================================================================= */
+.mapa {
+  position: relative;
+  padding-block: clamp(64px, 10vh, 112px) clamp(96px, 16vh, 160px);
+}
+/* Con la rampa (JS), se solapa con los últimos 36vh del anochecer: la hoja
+   entra mientras la ladera baja (la baja la propia entrada del mapa, ver
+   src/nucleo/cielo.js) y ningún cuadro queda como cielo vacío. En ese tramo el
+   cielo ya es noche (b ≥ 0.7), así que el texto claro pasa AA. */
+.con-js .mapa { margin-top: -36vh; padding-top: 0; }
+
+.mapa__hoja {
+  position: relative;
+  --columna: 44rem;
+  padding: 10px;
+  transform: rotate(-1.2deg);
+}
+.mapa__hoja .cinta { top: -12px; left: 42%; transform: rotate(3deg); }
+.mapa__lienzo { position: relative; }
+/* El dibujo: todo sale de los siete colores. */
+.mapa__lienzo svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: color-mix(in oklab, var(--color-papel) 88%, var(--color-tarde));
+}
+.mapa__manzanas { fill: color-mix(in oklab, var(--color-papel) 68%, var(--color-tarde)); }
+.mapa__verde { fill: color-mix(in oklab, var(--color-escarcha) 55%, var(--color-papel)); }
+.mapa__calles {
+  fill: none;
+  stroke: var(--color-papel);
+  stroke-linecap: round;
+}
+.mapa__vias {
+  fill: none;
+  stroke: color-mix(in oklab, var(--color-noche) 30%, var(--color-papel));
+  stroke-width: 2;
+  stroke-dasharray: 2 6;
+}
+.mapa__agua { fill: color-mix(in oklab, var(--color-escarcha) 70%, var(--color-cielo)); }
+.mapa__ruta {
+  fill: none;
+  stroke: var(--color-sello);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+/* El barrido que descubre la ruta: un rectángulo que escala. */
+.mapa__barrido { transform: scaleX(clamp(0, var(--p, 1) * 1.15, 1)); }
+.mapa__aro { fill: color-mix(in oklab, var(--color-sello) 16%, transparent); stroke: var(--color-sello); stroke-width: 1.5; }
+.mapa__punto { fill: var(--color-sello); }
+/* Cada lugar se enciende cuando el barrido llega a él. */
+.mapa__marca,
+.mapa__lugar {
+  opacity: clamp(0.15, (var(--p, 1) * 1.15 - var(--en)) * 12 + 1, 1);
+}
+
+/* ---- Los nombres: HTML sobre el dibujo ---------------------------------- */
+.mapa__lugares { list-style: none; margin: 0; padding: 0; }
+.mapa__lugar { position: absolute; width: 0; height: 0; }
+.mapa__lugar a,
+.mapa__sin-enlace {
+  position: absolute;
+  top: -22px;
+  display: grid;
+  align-content: center;
+  min-height: 44px;
+  padding: 2px 8px;
+  white-space: nowrap;
+  color: var(--color-noche);
+  text-decoration: none;
+  background: color-mix(in oklab, var(--color-papel) 86%, transparent);
+  --foco: var(--color-sello);
+}
+.mapa__lugar[data-lado="der"] a,
+.mapa__lugar[data-lado="der"] .mapa__sin-enlace { left: 14px; }
+.mapa__lugar[data-lado="izq"] a,
+.mapa__lugar[data-lado="izq"] .mapa__sin-enlace { right: 14px; text-align: right; }
+.mapa__nombre {
+  font-size: clamp(17px, 1rem + 0.5vw, 21px);
+  line-height: 1.15;
+}
+.mapa__lugar a .mapa__nombre {
+  text-decoration: underline;
+  text-decoration-color: var(--color-sello);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.mapa__detalle {
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in oklab, var(--color-noche) 72%, var(--color-papel));
+}
+@media (hover: hover) {
+  .mapa__lugar a:hover .mapa__nombre { text-decoration-thickness: 2px; }
+}
+
+.mapa__pendiente {
+  --columna: 44rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: clamp(32px, 6vh, 56px);
+  font-size: 15px;
+  color: var(--tinta-suave);
+}
+/* El pin de lo que falta: en ámbar, como un lugar todavía por encender. */
+.mapa__pendiente svg { flex: none; width: 18px; height: 18px; color: var(--color-ambar); }

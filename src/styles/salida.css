@@ -1,0 +1,71 @@
+/* =========================================================================
+   La salida — la puerta trasera, desde dentro (Salida.jsx)
+   -------------------------------------------------------------------------
+   El mismo gesto que el umbral, al revés: la hoja se abre (0.03→0.25), la
+   cámara cruza (0.18→0.62, escala 1 → 9.52 en z²) y la escena se desvanece
+   (fundido → fundido + 0.10) sobre la travesía, solapada debajo.
+
+   La cámara se detiene justo donde empieza el fundido, y la travesía no
+   arranca la suya hasta que termina: mientras dura, las dos imágenes son la
+   misma (el vano a escala 9.52 es el primer cuadro de la travesía) y no hay
+   nada que se vea doble. Si una de las dos se moviera, cada pino saldría
+   dos veces.
+   ========================================================================= */
+.salida {
+  height: calc(100vh + var(--salida-recorrido));
+  --o: clamp(0, (var(--p, 0) - 0.03) / 0.22, 1);
+  --z: clamp(0, (var(--p, 0) - 0.18) / (var(--salida-fundido) - 0.18), 1);
+}
+.salida .escena__escenario { opacity: clamp(0, (var(--salida-fundido) + 0.1 - var(--p, 0)) / 0.1, 1); }
+html:not(.con-js) .salida { display: none; }
+
+.salida__camara {
+  transform-box: view-box;
+  transform-origin: 600px 736px;
+  transform: scale(calc(1 + 8.52 * var(--z) * var(--z)));
+}
+.salida__pared { fill: var(--interior); }
+.salida__piso { fill: color-mix(in oklab, var(--interior) 78%, var(--color-noche)); }
+.salida__cerco { fill: color-mix(in oklab, var(--interior) 60%, var(--color-noche)); }
+.salida__cielo { fill: var(--color-noche); }
+.salida__marco { fill: var(--madera); }
+.salida__marco-cruz { stroke: var(--madera); stroke-width: 6; }
+.salida__cable { stroke: var(--cable); stroke-width: 2; }
+.salida__pantalla { fill: var(--color-noche); }
+.salida__foco { fill: var(--color-ambar); }
+.salida__luna { fill: var(--color-papel); }
+.salida__estrellas { fill: var(--color-papel); }
+.salida__hoja {
+  fill: color-mix(in oklab, var(--interior) 82%, var(--color-ambar));
+  opacity: clamp(0, 1 - var(--z) * 2.5, 1);
+}
+.salida__pomo { fill: var(--color-ambar); }
+/* La nieve de la ventana y del vano (Salida.jsx). Cada copo baja de lo alto
+   de su franja a lo bajo y vuelve a empezar. */
+.copos { fill: var(--color-papel); }
+.copos circle { animation: copo linear infinite; }
+@keyframes copo {
+  from { transform: translate(0, var(--desde)); }
+  to { transform: translate(var(--deriva), var(--hasta)); }
+}
+/* Los de lejos crecen con la cámara: se van antes de parecer bolas. */
+.copos--lejos { opacity: calc(0.75 * clamp(0, 1 - var(--z) * 2, 1)); }
+/* Los de al cruzar deshacen el zoom de la cámara (misma escala, mismo
+   origen, invertida): caen en pantalla como los de la travesía mientras el
+   recorte del vano sí crece. */
+.salida__al-cruzar {
+  opacity: 0.75;
+  transform-box: view-box;
+  transform-origin: 600px 736px;
+  transform: scale(calc(1 / (1 + 8.52 * var(--z) * var(--z))));
+}
+@media (prefers-reduced-motion: reduce) {
+  .copos circle { animation: none; }
+}
+.salida__fuego {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: clamp(0, 1 - var(--z) * 2.5, 1);
+}
