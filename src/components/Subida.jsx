@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { CONFIG } from "../data/config.js";
-import { HISTORIA, EXTRAS } from "../data/historia.js";
+import { HISTORIA, EXTRAS, EXTRAS_TITULO } from "../data/historia.js";
 import { useEscena, useMenosMovimiento, useRevelar } from "../nucleo/hooks.js";
 import { azar, tween } from "../nucleo/efectos.js";
 import { Impresion, hayFoto } from "./Impresion.jsx";
@@ -193,6 +193,7 @@ export function Subida() {
   const [abierta, setAbierta] = useState(null);
   /* Solo las que tienen su archivo: una que falte no deja un hueco. */
   const extras = EXTRAS.map((x, j) => ({ x, j })).filter(({ x }) => hayFoto(x.imagen));
+  const [refTitulo, tituloVisto] = useRevelar();
 
   return (
     <section id="historia" className="subida" aria-labelledby="historia-titulo" tabIndex={-1}>
@@ -214,7 +215,12 @@ export function Subida() {
 
       {extras.length > 0 && (
         <div className="columna extras" data-captura="0">
-          <h3 className="solo-lectores">Más fotos nuestras</h3>
+          {/* Un título de verdad: es la única sección con rótulo visible,
+              porque aquí cambia el tipo de cosa que se ve (de momentos con
+              historia a fotos sueltas). */}
+          {EXTRAS_TITULO ? (
+            <h3 ref={refTitulo} className={`display extras__titulo revelar${tituloVisto ? " visto" : ""}`}>{EXTRAS_TITULO}</h3>
+          ) : null}
           <ul className="extras__mesa">
             {extras.map(({ x, j }) => (
               <Extra key={j} x={x} j={j} total={EXTRAS.length} alAbrir={setAbierta} />

@@ -98,6 +98,9 @@ export const HISTORIA = [
    teléfono, redúcela a unos 1600 px de lado largo: pesa diez veces menos
    y se ve igual).
    ========================================================================= */
+/* El título que va encima de la mesa de fotos. Vacío ("") y no sale. */
+export const EXTRAS_TITULO = "Más fotos y videos que contienen nuestra historia";
+
 export const EXTRAS = [
   { imagen: "/assets/fotos/extra1.webp", pie: "" },
   { imagen: "/assets/fotos/extra2.webp", pie: "" },
