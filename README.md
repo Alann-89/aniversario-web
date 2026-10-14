@@ -1,7 +1,5 @@
 # Nuestra Historia
 
-**Ver la muestra en vivo:** https://nuestra-historia-muestra.scriptconcept.workers.dev/
-
 Un regalo de aniversario hecho como sitio web: un recorrido de arriba abajo, del atardecer a la noche, que se abre desde un link en el teléfono. Hay una trivia dentro de un sobre con lacre, boletos de papel que se rasgan, una cabaña con nieve y humo, y al final una carta.
 
 Lo diseñé y programé de principio a fin. Esta es la **versión de muestra**: lleva textos de ejemplo y no incluye las fotos, los videos ni la canción de la versión real, que es personal y se queda privada. Las fotos que se ven son de ejemplo: el build las baja de [Lorem Picsum](https://picsum.photos) (imágenes de [Unsplash](https://unsplash.com)).
@@ -10,7 +8,7 @@ Lo diseñé y programé de principio a fin. Esta es la **versión de muestra**: 
 
 *De izquierda a derecha: el mapa de papel, el sobre con lacre de la trivia, la cabaña de noche, los boletos en su repisa y la caminata por la nieve.*
 
-> **Demo en vivo:** no hay. La versión publicada es el regalo real y no es pública. Para verlo, clona el repo y sigue [Probarlo en local](#probarlo-en-local).
+> **Demo en vivo:** https://nuestra-historia-muestra.scriptconcept.workers.dev/
 
 **Stack:** React 19 · Vite 8 · Tailwind CSS v4 (solo para el reset y los tokens) · CSS y SVG a mano · sin librerías de animación.
 
