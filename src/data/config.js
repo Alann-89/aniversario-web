@@ -25,6 +25,14 @@ export const CONFIG = {
      nada. */
   portada: "/assets/fotos/portada.webp",
 
+  /* El video de la impresión que asoma en la portada. Corre en bucle y en
+     mudo; si se toca se abre en grande. Pon aquí la ruta de tu video
+     (por ejemplo "/assets/fotos/video_inicio.mp4") y, junto a él, su póster
+     (lo que se ve antes de que arranque) con el mismo nombre en .webp:
+     video_inicio.mp4 -> video_inicio.webp. Vacío: se ve la foto del primer
+     momento. */
+  videoInicio: "",
+
   /* ---------- Música ----------
      Vacío: el casete se ve pero no suena. Pon aquí la ruta de tu canción,
      por ejemplo "/assets/audio/cancion.mp3". */
@@ -89,7 +97,7 @@ export const LUGARES = [
   {
     nombre:   "Donde nos conocimos",
     detalle:  "14 febrero 2024",
-    x: 168, y: 292,
+    x: 168, y: 302,
     busqueda: "Bosque de Chapultepec, Ciudad de México"
   },
   {
@@ -97,7 +105,16 @@ export const LUGARES = [
     detalle:  "2 marzo 2024",
     x: 336, y: 196,
     busqueda: "Palacio de Bellas Artes, Ciudad de México"
+  },
+  {
+    nombre:   "Nuestra primera feria",
+    detalle:  "15 septiembre 2024",
+    x: 440, y: 96,
+    busqueda: "La Feria de Chapultepec Mágico, Ciudad de México"
   }
+  /* Van en orden de fecha: la ruta del mapa los une así, y se dibuja de
+     izquierda a derecha, así que cada lugar nuevo debe tener una x mayor
+     que el anterior. */
 ];
 
 /* Texto que se muestra bajo el mapa cuando todavía faltan lugares por

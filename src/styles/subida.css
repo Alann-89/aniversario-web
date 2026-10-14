@@ -85,7 +85,7 @@
   transform: rotate(var(--giro));
 }
 .parada__foto .cinta { top: -12px; left: var(--cinta-x); transform: rotate(var(--cinta-giro)); }
-.parada__abrir {
+.impresion-abrir {
   display: block;
   width: 100%;
   padding: 0;
@@ -94,13 +94,14 @@
   transition: transform 0.4s var(--ease-salida);
 }
 @media (hover: hover) {
-  .parada__abrir:hover { transform: rotate(calc(var(--giro) * -1)) scale(1.015); }
+  .impresion-abrir:hover { transform: rotate(calc(var(--giro, 0deg) * -1)) scale(1.015); }
 }
-.parada__abrir { position: relative; }
-.parada__abrir:active { transform: scale(0.985); transition-duration: 0.12s; }
+.impresion-abrir { position: relative; }
+.impresion-abrir:active { transform: scale(0.985); transition-duration: 0.12s; }
 /* Las fotos que se abren en grande lo dicen: una fichita redonda de papel
-   en la esquina, lejos de la cinta y de la fecha estampada. */
-.parada__ampliar {
+   en la esquina, lejos de la cinta y de la fecha estampada. La usan las
+   paradas de la subida y el video de la portada. */
+.impresion-ampliar {
   position: absolute;
   top: 16px;
   right: 16px;
@@ -113,7 +114,7 @@
   color: var(--color-noche);
   box-shadow: var(--sombra);
 }
-.parada__ampliar svg { width: 15px; height: 15px; }
+.impresion-ampliar svg { width: 15px; height: 15px; }
 @media (prefers-reduced-motion: reduce) {
   .contador--listo .contador__txt svg { animation: none; }
 }
@@ -157,6 +158,44 @@
   color: var(--tinta-suave);
 }
 
+/* ---- Las fotos extra: una mesa de impresiones sueltas ------------------
+   Dos columnas en el teléfono y cuatro en pantalla ancha. Con flex y no con
+   cuadrícula: la última fila, si queda incompleta, se centra sola en lugar
+   de pegarse a la izquierda. Cada foto con su giro, su cinta y su altura
+   (`--baja`), para que no se lea como una rejilla de galería. */
+.extras {
+  --columna: 30rem;
+  margin-top: clamp(88px, 14vh, 140px);
+}
+.extras__mesa {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 30px 16px;
+}
+.extra {
+  width: calc(50% - 8px);
+  margin-top: var(--baja, 0px);
+}
+.extra__foto {
+  position: relative;
+  transform: rotate(var(--giro));
+}
+.extra__foto .cinta {
+  top: -10px;
+  left: var(--cinta-x);
+  width: 56px;
+  height: 18px;
+  transform: rotate(var(--cinta-giro));
+}
+/* La fichita de ampliar, más chica: la foto también lo es. */
+.extra .impresion-ampliar { top: 14px; right: 14px; width: 26px; height: 26px; }
+.extra .impresion-ampliar svg { width: 13px; height: 13px; }
+
 /* En escritorio cada parada pasa a dos columnas iguales, con la nota
    metida sobre la foto; el hilo ya separa en vez de enhebrar y se calla.
    También con el teléfono acostado: a 844×390 la impresión en una columna
@@ -172,4 +211,6 @@
   .parada[data-lado="der"] .parada__foto { grid-column: 2; justify-self: start; }
   .parada[data-lado="der"] .parada__nota { grid-column: 1; margin: 0 -60px 0 0; justify-self: end; }
   .subida__hilo { opacity: 0.25; }
+  .extras { --columna: 56rem; }
+  .extra { width: calc(25% - 12px); }
 }

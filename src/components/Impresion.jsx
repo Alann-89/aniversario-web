@@ -1,4 +1,4 @@
-import fotos from "virtual:fotos";
+import fotos, { medidas } from "virtual:fotos";
 import { Icono } from "./Icono.jsx";
 
 /* =========================================================================
@@ -14,18 +14,25 @@ import { Icono } from "./Icono.jsx";
    ========================================================================= */
 export const hayFoto = (src) => Boolean(src) && fotos.has(src);
 
-export function Impresion({ imagen, alt = "", fecha, prioritaria = false }) {
-  const conFoto = hayFoto(imagen);
+/* `medio`: algo que ocupa el lugar de la foto dentro del marco (el video de
+   la portada). `natural`: el marco toma la proporción de la propia foto, no
+   el 4:5 de los momentos; así una foto horizontal no pierde los lados (en
+   un marco vertical con `cover` se cortaban a las personas). */
+export function Impresion({ imagen, alt = "", fecha, prioritaria = false, medio = null, natural = false }) {
+  const conFoto = Boolean(medio) || hayFoto(imagen);
+  const [ancho, alto] = (natural && medidas[imagen]) || [800, 1000];
   return (
     <span className={`impresion${conFoto ? "" : " impresion--vacia"}`}>
-      <span className="impresion__marco">
-        {conFoto ? (
+      <span className="impresion__marco" style={natural ? { "--relacion": `${ancho} / ${alto}` } : undefined}>
+        {medio ? (
+          medio
+        ) : conFoto ? (
           <img
             className="impresion__foto"
             src={imagen}
             alt={alt}
-            width="800"
-            height="1000"
+            width={ancho}
+            height={alto}
             loading={prioritaria ? "eager" : "lazy"}
             decoding="async"
           />

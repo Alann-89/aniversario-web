@@ -28,12 +28,20 @@
   box-shadow: var(--sombra);
   max-width: min(92vw, 560px);
 }
-.galeria__hoja img {
+.galeria__hoja img,
+.galeria__hoja video {
   display: block;
   max-height: 70vh;
   width: auto;
   max-width: 100%;
   margin-inline: auto;
+}
+/* El video de la portada (VideoGrande.jsx): vertical, con sus controles. En
+   un teléfono acostado el 70vh quedaría diminuto; se le da casi todo el
+   alto que deja el marco. */
+.galeria__hoja video {
+  max-height: calc(100dvh - 120px);
+  background: var(--color-noche);
 }
 .galeria__hoja figcaption { margin-top: 12px; display: grid; gap: 2px; }
 .galeria__fecha {

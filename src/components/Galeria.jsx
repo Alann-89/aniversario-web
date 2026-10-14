@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { HISTORIA } from "../data/historia.js";
+import { HISTORIA, EXTRAS } from "../data/historia.js";
 import { hayFoto } from "./Impresion.jsx";
 import { Icono } from "./Icono.jsx";
 
@@ -10,19 +10,27 @@ import { Icono } from "./Icono.jsx";
    inerte el resto de la página, cierra con Escape y devuelve el foco al
    botón que lo abrió. Nada de eso se reescribe a mano.
 
-   Solo recorre los momentos que tienen foto. Se pasa con el dedo, pero es
+   Recorre primero los momentos y después las fotos extra (historia.js),
+   las que tienen su archivo; el índice que recibe es la posición en esa
+   lista de todas: los momentos y, a continuación, los extras. Los extras
+   no llevan fecha ni título (el pie es opcional): el pie de la foto solo
+   sale si lo hay. Se pasa con el dedo, pero es
    un gesto de umbral (48 px horizontales entre bajar y levantar), no un
    arrastre: la foto no sigue al dedo ni rebota. La única física del sitio
    sigue siendo el boleto.
 
    Se carga aparte (React.lazy en Subida.jsx): no hace falta al abrir.
    ========================================================================= */
-const CON_FOTO = HISTORIA.map((m, i) => (hayFoto(m.imagen) ? i : -1)).filter((i) => i >= 0);
+const FOTOS = [
+  ...HISTORIA.map((m) => ({ imagen: m.imagen, titulo: m.titulo, fecha: m.fecha })),
+  ...EXTRAS.map((x) => ({ imagen: x.imagen, titulo: x.pie, fecha: "" })),
+];
+const CON_FOTO = FOTOS.map((f, i) => (hayFoto(f.imagen) ? i : -1)).filter((i) => i >= 0);
 
 export default function Galeria({ indice, alCambiar, alCerrar }) {
   const dialogo = useRef(null);
   const gesto = useRef(null); // { x, enFondo } del último pointerdown
-  const m = HISTORIA[indice];
+  const m = FOTOS[indice];
   const pos = CON_FOTO.indexOf(indice);
   const varias = CON_FOTO.length > 1;
 
@@ -40,7 +48,7 @@ export default function Galeria({ indice, alCambiar, alCerrar }) {
     <dialog
       ref={dialogo}
       className="galeria"
-      aria-label={m.titulo}
+      aria-label={m.titulo || "Foto"}
       onClose={alCerrar}
       /* Se cierra con un toque en el fondo, no al terminar un arrastre que
          empezó en la foto (el click cae en el <dialog> por ser el ancestro
@@ -60,11 +68,13 @@ export default function Galeria({ indice, alCambiar, alCerrar }) {
       }}
     >
       <figure className="galeria__hoja">
-        <img src={m.imagen} alt={m.titulo} />
-        <figcaption>
-          <span className="galeria__fecha">{m.fecha}</span>
-          <span className="display galeria__titulo">{m.titulo}</span>
-        </figcaption>
+        <img src={m.imagen} alt={m.titulo || ""} />
+        {m.titulo || m.fecha ? (
+          <figcaption>
+            {m.fecha ? <span className="galeria__fecha">{m.fecha}</span> : null}
+            {m.titulo ? <span className="display galeria__titulo">{m.titulo}</span> : null}
+          </figcaption>
+        ) : null}
       </figure>
       <button type="button" className="galeria__cerrar" aria-label="Cerrar" onClick={() => dialogo.current.close()}>
         <Icono nombre="cerrar" />

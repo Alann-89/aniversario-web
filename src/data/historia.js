@@ -79,3 +79,31 @@ export const HISTORIA = [
      feria, regalo, taza, cabana, casa, libro, ticket, pin, camara, luna.
   */
 ];
+
+/* =========================================================================
+   EXTRAS — las fotos sueltas, sin fecha ni historia
+   -------------------------------------------------------------------------
+   Después del último momento queda una mesa con estas fotos como si
+   alguien las hubiera dejado ahí: cada una con su cinta, un poco girada, y
+   al tocarla se abre en grande, en la misma galería que los momentos. Van
+   en este orden. Cada una conserva su proporción (horizontal o vertical),
+   no se recorta.
+
+   VERSIÓN DE MUESTRA: sin los archivos en public/assets/fotos/ la mesa no
+   se muestra (una foto que falta no deja un hueco).
+
+   `pie` es opcional: si lo escribes, sale debajo de la foto en grande. Sin
+   pie la foto va sola. Para agregar una, copia un bloque y pon su archivo
+   en public/assets/fotos/ (cualquier nombre .webp; si es una foto del
+   teléfono, redúcela a unos 1600 px de lado largo: pesa diez veces menos
+   y se ve igual).
+   ========================================================================= */
+export const EXTRAS = [
+  { imagen: "/assets/fotos/extra1.webp", pie: "" },
+  { imagen: "/assets/fotos/extra2.webp", pie: "" },
+  { imagen: "/assets/fotos/extra3.webp", pie: "" },
+  { imagen: "/assets/fotos/extra4.webp", pie: "" },
+  { imagen: "/assets/fotos/extra5.webp", pie: "" },
+  { imagen: "/assets/fotos/extra6.webp", pie: "" },
+  { imagen: "/assets/fotos/extra7.webp", pie: "" },
+];

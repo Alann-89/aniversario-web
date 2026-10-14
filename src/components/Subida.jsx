@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { CONFIG } from "../data/config.js";
-import { HISTORIA } from "../data/historia.js";
+import { HISTORIA, EXTRAS } from "../data/historia.js";
 import { useEscena, useMenosMovimiento, useRevelar } from "../nucleo/hooks.js";
 import { azar, tween } from "../nucleo/efectos.js";
 import { Impresion, hayFoto } from "./Impresion.jsx";
@@ -116,9 +116,9 @@ function Parada({ m, i, alAbrir }) {
       <div className="parada__foto">
         <span className="cinta" aria-hidden="true" />
         {conFoto ? (
-          <button type="button" className="parada__abrir" onClick={() => alAbrir(i)} aria-label={`Ver en grande: ${m.titulo}`}>
+          <button type="button" className="impresion-abrir" onClick={() => alAbrir(i)} aria-label={`Ver en grande: ${m.titulo}`}>
             {impresion}
-            <span className="parada__ampliar" aria-hidden="true">
+            <span className="impresion-ampliar" aria-hidden="true">
               <Icono nombre="ampliar" />
             </span>
           </button>
@@ -146,6 +146,42 @@ function Parada({ m, i, alAbrir }) {
   );
 }
 
+/* =========================================================================
+   Extra — una foto suelta de la mesa
+   -------------------------------------------------------------------------
+   Sin fecha ni nota: solo la impresión con su cinta, un poco girada y a
+   distinta altura que su vecina, como si alguien las hubiera ido dejando.
+   Conserva la proporción de la foto (`natural`) y se abre en la galería, a
+   continuación de los momentos: su número allí es HISTORIA.length + j.
+   ========================================================================= */
+function Extra({ x, j, total, alAbrir }) {
+  const [ref, visto] = useRevelar();
+  const estilo = {
+    "--giro": (azar(j + 61) * 6 - 3).toFixed(2) + "deg",
+    "--cinta-x": (18 + azar(j + 71) * 46).toFixed(0) + "%",
+    "--cinta-giro": (azar(j + 81) * 12 - 6).toFixed(1) + "deg",
+    "--baja": (azar(j + 91) * 34).toFixed(0) + "px",
+  };
+  return (
+    <li ref={ref} className={`extra revelar${visto ? " visto" : ""}`} style={estilo}>
+      <div className="extra__foto">
+        <span className="cinta" aria-hidden="true" />
+        <button
+          type="button"
+          className="impresion-abrir"
+          onClick={() => alAbrir(HISTORIA.length + j)}
+          aria-label={x.pie ? `Ver en grande: ${x.pie}` : `Ver en grande la foto ${j + 1} de ${total}`}
+        >
+          <Impresion imagen={x.imagen} natural />
+          <span className="impresion-ampliar" aria-hidden="true">
+            <Icono nombre="ampliar" />
+          </span>
+        </button>
+      </div>
+    </li>
+  );
+}
+
 /* ---------------- La subida ----------------
    Sin rótulo de sección (decisión de Alan, 23 sep 2026): el nombre queda
    solo para el lector de pantalla. El hilo del camino une las paradas y se
@@ -155,6 +191,8 @@ function Parada({ m, i, alAbrir }) {
 export function Subida() {
   const hilo = useEscena({ modo: "paso" });
   const [abierta, setAbierta] = useState(null);
+  /* Solo las que tienen su archivo: una que falte no deja un hueco. */
+  const extras = EXTRAS.map((x, j) => ({ x, j })).filter(({ x }) => hayFoto(x.imagen));
 
   return (
     <section id="historia" className="subida" aria-labelledby="historia-titulo" tabIndex={-1}>
@@ -173,6 +211,17 @@ export function Subida() {
           ))}
         </ol>
       </div>
+
+      {extras.length > 0 && (
+        <div className="columna extras" data-captura="0">
+          <h3 className="solo-lectores">Más fotos nuestras</h3>
+          <ul className="extras__mesa">
+            {extras.map(({ x, j }) => (
+              <Extra key={j} x={x} j={j} total={EXTRAS.length} alAbrir={setAbierta} />
+            ))}
+          </ul>
+        </div>
+      )}
 
       {abierta !== null && (
         <Suspense fallback={null}>

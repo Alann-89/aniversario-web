@@ -3,6 +3,7 @@ import { CONFIG } from "../data/config.js";
 import { HISTORIA } from "../data/historia.js";
 import { useEscena } from "../nucleo/hooks.js";
 import { Impresion, hayFoto } from "./Impresion.jsx";
+import { VideoInicio, hayVideoInicio } from "./VideoInicio.jsx";
 
 /* =========================================================================
    Portada — la foto de los dos a pantalla completa, con el título encima
@@ -21,11 +22,12 @@ import { Impresion, hayFoto } from "./Impresion.jsx";
      solo opacidad).
    · "Mi lugar favorito y perfecto" es una NOTA PEGADA A LA FOTO, junto a
      ellos dos: el lugar son ellos. Abajo quedan solo el título y su frase.
-   · Abajo asoma la primera impresión de la subida, girada, y la pista
-     ("baja, hay algo abajo") va ESCRITA EN SU CINTA, con la línea de
-     siempre bajando hacia ella: la invitación no es un botón, es algo
-     físico esperándola. La línea se desvanece al empezar a bajar. Sube con el
-     scroll píxel por píxel hasta quedar entera y luego sigue a la página
+   · Abajo asoma una impresión, girada, y la pista ("baja, hay algo abajo")
+     va ESCRITA EN SU CINTA, con la línea de siempre bajando hacia ella: la
+     invitación no es un botón, es algo físico esperándola. La impresión es
+     un VIDEO (config.videoInicio; ver VideoInicio.jsx) o, sin él, la foto
+     del primer momento. La línea se desvanece al empezar a bajar. Sube con
+     el scroll píxel por píxel hasta quedar entera y luego sigue a la página
      (si se quedara fija, el borde de la sección la guillotinaría con una
      línea recta). Responde a su gesto, así que se conserva con movimiento
      reducido.
@@ -115,19 +117,27 @@ export function Portada() {
         </p>
       ) : null}
 
-      {/* El enlace es el objeto entero; su nombre, la pista de la cinta. */}
-      <a ref={asoma} className="portada__asoma" href="#historia">
+      <div ref={asoma} className="portada__asoma">
         {/* La línea que baja, la de antes (Alan la quiso de vuelta): en su
             color claro, señalando la cinta. */}
         <span className="portada__linea" aria-hidden="true">
           <span className="portada__trazo" />
           <span className="portada__punta" />
         </span>
-        <span className="cinta portada__pista">{CONFIG.textoBoton}</span>
-        <span aria-hidden="true">
-          <Impresion imagen={primera?.imagen} prioritaria />
-        </span>
-      </a>
+        {/* El enlace de "baja" es la cinta. La impresión es otra cosa: con
+            video es un botón que lo abre en grande; sin él (o sin el
+            archivo) es la foto del primer momento, que también baja. */}
+        <a className="portada__pista" href="#historia">
+          {CONFIG.textoBoton}
+        </a>
+        {hayVideoInicio() ? (
+          <VideoInicio />
+        ) : (
+          <a href="#historia" tabIndex={-1} aria-hidden="true" className="portada__foto-abajo">
+            <Impresion imagen={primera?.imagen} prioritaria />
+          </a>
+        )}
+      </div>
     </section>
   );
 }

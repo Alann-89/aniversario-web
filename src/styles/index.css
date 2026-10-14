@@ -226,7 +226,7 @@
   .impresion__marco {
     display: grid;
     place-items: center;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: var(--relacion, 4 / 5);
     overflow: hidden;
     background: color-mix(in oklab, var(--color-papel) 88%, var(--color-escarcha));
   }

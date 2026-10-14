@@ -15,6 +15,7 @@ const TIPOS = {
   ".png": "image/png",
   ".svg": "image/svg+xml",
   ".mp3": "audio/mpeg",
+  ".mp4": "video/mp4",
 };
 
 export const DIST = resolve(dirname(fileURLToPath(import.meta.url)), "../dist");
