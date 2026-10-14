@@ -51,7 +51,7 @@ export const CONFIG = {
     subtitulo:"Antes de entrar, ábreme esto.",
     // Mensajes de la pantalla de recompensa
     recompensaTitulo:  "¡Me conoces muy bien!",
-    recompensaTexto:   "Tu premio te espera al final del recorrido.",
+    recompensaTexto:   "",
     mensajeIncompleto: "Casi, casi. ¿Le damos otra vuelta?",
     /* Cuántas hay que acertar para que se abra el premio. null = todas. */
     minimoParaGanar: null

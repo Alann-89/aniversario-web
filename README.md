@@ -2,7 +2,7 @@
 
 Un regalo de aniversario hecho como sitio web: un recorrido de arriba abajo, del atardecer a la noche, que se abre desde un link en el teléfono. Hay una trivia dentro de un sobre con lacre, boletos de papel que se rasgan, una cabaña con nieve y humo, y al final una carta.
 
-Lo diseñé y programé de principio a fin. Esta es la **versión de muestra**: lleva textos de ejemplo y no incluye las fotos, los videos ni la canción de la versión real, que es personal y se queda privada.
+Lo diseñé y programé de principio a fin. Esta es la **versión de muestra**: lleva textos de ejemplo y no incluye las fotos, los videos ni la canción de la versión real, que es personal y se queda privada. Las fotos que se ven son de ejemplo: el build las baja de [Lorem Picsum](https://picsum.photos) (imágenes de [Unsplash](https://unsplash.com)).
 
 ![Cinco escenas del recorrido: el mapa de papel, el sobre de la trivia, la cabaña, los boletos y la travesía por la nieve](docs/capturas.webp)
 
@@ -69,7 +69,11 @@ Todo lo que cambia está en [`src/data/`](src/data):
 | `trivia.js` | Las preguntas (la respuesta va ofuscada: `clave = posición × 7 + 3`) |
 | `cupones.js` | Los boletos que se rasgan |
 
-Las fotos van en `public/assets/fotos/` (`portada.webp`, `momento1.webp`, `extra1.webp`…) y la canción en `public/assets/audio/`. Si una foto no está, el sitio muestra el papel en espera y sigue funcionando.
+Las fotos van en `public/assets/fotos/` (`portada.webp`, `momento1.webp`, `extra1.webp`…) y la canción en `public/assets/audio/`. `npm run build` ejecuta antes `tools/muestras.js`, que baja fotos de ejemplo de Lorem Picsum para los nombres que falten; si pones las tuyas con esos nombres, se respetan. Si una foto no está y no hay red, el sitio muestra el papel en espera y sigue funcionando.
+
+## Publicarlo
+
+Es un sitio estático: `npm run build` y se sirve `dist/`. Con Cloudflare Workers (Workers Builds) basta conectar el repo con build `npm run build` y deploy `npx wrangler deploy`; `wrangler.jsonc` ya apunta a `dist/`.
 
 ## Estructura
 
@@ -80,7 +84,7 @@ src/
   logica/       trivia, cupones, arrastre del boleto, música (sin dibujo)
   data/         el contenido que se edita
   styles/       una hoja de estilos por tramo
-tools/          prerender.js y servidor.js (los usa el build)
+tools/          muestras.js, prerender.js y servidor.js (los usa el build)
 ```
 
 ## Sobre esta versión

@@ -152,11 +152,7 @@ export function Puerta() {
               {t.gano ? (
                 <>
                   <h3 className="display premio__titulo">{CONFIG.trivia.recompensaTitulo}</h3>
-                  <p className="premio__texto">{CONFIG.trivia.recompensaTexto}</p>
-                  <p className="premio__llave">
-                    <Icono nombre="candadoAbierto" />
-                    <span>ve a mi coche</span>
-                  </p>
+                  {CONFIG.trivia.recompensaTexto ? <p className="premio__texto">{CONFIG.trivia.recompensaTexto}</p> : null}
                   <button type="button" className="tinta premio__otra" onClick={con(t.reiniciar, ".pregunta--actual .pregunta__texto")}>
                     <Icono nombre="repetir" />
                     <span>jugar otra vez</span>

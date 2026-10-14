@@ -21,6 +21,10 @@ skills-lock.json
 tools/*
 !tools/prerender.js
 !tools/servidor.js
+!tools/muestras.js
+
+# Fotos de ejemplo: las baja tools/muestras.js al compilar (no se suben)
+public/assets/fotos/
 
 # Sistema y editores
 .DS_Store

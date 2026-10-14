@@ -189,15 +189,6 @@ html:not(.con-js) .sobre__solapa { transform: scaleY(-0.55); }
   letter-spacing: -0.015em;
 }
 .premio__texto { margin-top: 12px; color: var(--tinta-suave); }
-.premio__llave {
-  margin-top: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 700;
-  color: var(--color-sello);
-}
-.premio__llave svg { width: 20px; height: 20px; }
 .premio__otra { margin-top: 20px; }
 .trivia__pendiente {
   margin-top: 24px;

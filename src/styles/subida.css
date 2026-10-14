@@ -172,7 +172,7 @@
 .extras__titulo {
   max-width: 20ch;
   margin: 0 auto clamp(36px, 6vh, 56px);
-  font-size: clamp(1.6rem, 1.25rem + 1.8vw, 2.3rem);
+  font-size: clamp(2rem, 1.5rem + 2.4vw, 3rem);
   font-style: italic;
   line-height: 1.12;
   letter-spacing: -0.015em;
