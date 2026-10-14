@@ -99,7 +99,7 @@ export const HISTORIA = [
    y se ve igual).
    ========================================================================= */
 /* El título que va encima de la mesa de fotos. Vacío ("") y no sale. */
-export const EXTRAS_TITULO = "Más fotos y videos que contienen nuestra historia";
+export const EXTRAS_TITULO = "Más Fotos y Videos Que Contienen Nuestra Historia";
 
 export const EXTRAS = [
   { imagen: "/assets/fotos/extra1.webp", pie: "" },
