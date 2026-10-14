@@ -13,8 +13,9 @@ dist-ssr/
 .mcp.json
 skills-lock.json
 
-# Documentos de trabajo (se quedan en local)
+# Documentos de trabajo (se quedan en local); el README es lo único que sube
 *.md
+!README.md
 
 # De tools/ solo va lo que usa el build; la suite de pruebas vive en local
 tools/*
